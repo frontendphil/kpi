@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:kpi="http://www.omg.org/spec/BPMN/20100524/MODEL">
+
+    <simpleType name="tType">
+        <restriction base="string">
+            <enumeration value="integer" />
+            <enumeration value="float" />
+            <enumeration value="boolean" />
+            <enumeration value="dateTime" />
+        </restriction>
+    </simpleType>
+    
+    <element name="KPI" type="kpi:tKPI"></element>
+
+    <complexType name="tKPI">
+        <sequence>
+            <element ref="kpi:CalculationMethod" maxOccurs="1"
+                minOccurs="1">
+            </element>
+            <choice>
+                <element ref="kpi:Composition" maxOccurs="1" minOccurs="0"></element>
+                <element ref="kpi:Filter" maxOccurs="1" minOccurs="0"></element>
+            </choice>
+        </sequence>
+        <attribute name="name" type="string" use="required"></attribute>
+        <attribute name="targetValue" type="string" use="required"></attribute>
+        <attribute name="upperTolerance" type="string"></attribute>
+        <attribute name="lowerTolerance" type="string"></attribute>
+        <attribute name="resultType" type="kpi:tType" use="required"></attribute>
+        <attribute name="unit" type="string" use="required"></attribute>
+    </complexType>
+
+    <element name="Filter" type="kpi:tFilter"></element>
+    
+    <complexType name="tFilter" abstract="true">
+    	<sequence>
+    		<element name="Aggregation" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="CalculationMethod" type="kpi:tCalculationMethod"></element>
+
+    <complexType name="tCalculationMethod">
+        <choice>
+            <element ref="kpi:Function" maxOccurs="1" minOccurs="1"></element>
+            <element ref="kpi:Aggregation" maxOccurs="1" minOccurs="1"></element>
+        </choice>
+    </complexType>
+    
+    <element name="Function" type="kpi:tFunction"></element>
+    
+    <complexType name="tFunction" abstract="true">
+        <attribute name="resultType" type="kpi:tType" use="required"></attribute>
+    </complexType>
+    
+    <complexType name="tPlus">
+        <complexContent>
+            <extension base="kpi:tFunction">
+                <sequence>
+                    <element ref="kpi:Operand" maxOccurs="2" minOccurs="2"></element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="tMinus">
+        <complexContent>
+            <extension base="kpi:tFunction">
+                <sequence>
+                    <element ref="kpi:Operand" maxOccurs="2" minOccurs="2"></element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="tDivide">
+        <complexContent>
+            <extension base="kpi:tFunction">
+                <sequence>
+                    <element ref="kpi:Operand" maxOccurs="2" minOccurs="2"></element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="tTimes">
+        <complexContent>
+            <extension base="kpi:tFunction">
+                <sequence>
+                    <element name="Operand" type="kpi:tOperand"
+                        maxOccurs="2" minOccurs="2">
+                    </element>
+                </sequence>
+            </extension>
+        </complexContent>
+    </complexType>
+
+    <element name="Operand" type="kpi:tOperand"></element>
+
+    <complexType name="tOperand">
+        <choice>
+            <element name="InstanceMeasure" type="string" maxOccurs="1" minOccurs="1"></element>
+            <element ref="kpi:Function" maxOccurs="1" minOccurs="1"></element>
+            <element ref="kpi:Aggregation" maxOccurs="1" minOccurs="1"></element>
+            <element ref="kpi:Constant" maxOccurs="1" minOccurs="1"></element>
+        </choice>
+    </complexType>
+    
+    <element name="Constant" type="kpi:tConstant"></element>
+
+    <complexType name="tConstant">
+    	<choice>
+    		<element name="Float" type="float"></element>
+    		<element name="Integer" type="int"></element>
+    	</choice>
+    </complexType>
+
+    <element name="Aggregation" type="kpi:tAggregation"></element>
+
+    <complexType name="tAggregation" abstract="true">
+    	<choice>
+    		<element name="InstanceMeasure" type="string" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    		<element ref="kpi:Function" maxOccurs="1" minOccurs="1"></element>
+    		<element ref="kpi:Aggregation" maxOccurs="1"
+    			minOccurs="1">
+    		</element>
+    	</choice>
+        <attribute name="id" type="string"></attribute>
+        <attribute name="resultType" type="kpi:tType" use="required"></attribute>
+    	<attribute name="unit" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="tSumAggregation">
+		<complexContent>
+			<extension base="kpi:tAggregation"></extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="tMaxAggregation">
+		<complexContent>
+			<extension base="kpi:tAggregation"></extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="tMinAggregation">
+        <complexContent>
+            <extension base="kpi:tAggregation"></extension>
+        </complexContent>
+    </complexType>
+    
+    <complexType name="tAverageAggregation">
+        <complexContent>
+            <extension base="kpi:tAggregation"></extension>
+        </complexContent>
+    </complexType>
+    
+    <complexType name="tMedianAggregation">
+        <complexContent>
+            <extension base="kpi:tAggregation"></extension>
+        </complexContent>
+    </complexType>
+
+    <complexType name="tCountAggregation">
+        <complexContent>
+            <extension base="kpi:tAggregation"></extension>
+        </complexContent>
+    </complexType>
+
+    <element name="InstanceMeasure" type="kpi:tInstanceMeasure"></element>
+
+	<complexType name="tInstanceMeasure">
+		<choice>
+			<element ref="kpi:Function" maxOccurs="1" minOccurs="1"></element>
+			<element ref="kpi:Metric" maxOccurs="1" minOccurs="1"></element>
+		</choice>
+		<attribute name="resultType" type="kpi:tType" use="required"></attribute>
+		<attribute name="unit" type="string" use="required"></attribute>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+	
+	<element name="Metric" type="kpi:tMetric"></element>
+	
+	<complexType name="tMetric" abstract="true">
+        <attribute name="resultType" type="kpi:tType"></attribute>
+    </complexType>
+
+    <complexType name="tCountMetric">
+    	<complexContent>
+    		<extension base="kpi:tMetric"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tTimeSpanMetric">
+    	<complexContent>
+    		<extension base="kpi:tMetric"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tExtensionsDefinition">
+   	 	<sequence>
+	    	<element name="extensionAttributeDefinition" type="kpi:tExtensionAttributeDefinition" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+    
+    <complexType name="tExtensionAttributeDefinition">
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="type" type="string"></attribute>
+    	<attribute name="isReference" type="boolean"></attribute>
+    </complexType>
+
+    <complexType name="tExtensionAttributeValue">
+    	<sequence>
+    		<element name="extensionAttributeDefinition" type="kpi:tExtensionAttributeDefinition"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="tComposition" abstract="true">
+    	<sequence>
+   			<choice>
+   			     <element ref="kpi:Filter"></element>
+   			     <element ref="kpi:Composition"></element>
+   			</choice>
+   			<choice>
+                 <element ref="kpi:Filter"></element>
+                 <element ref="kpi:Composition"></element>
+            </choice>
+    	</sequence>
+    </complexType>
+
+    <complexType name="tANDComposition">
+    	<complexContent>
+    		<extension base="kpi:tComposition"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tORComposition">
+    	<complexContent>
+    		<extension base="kpi:tComposition"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tTimeFilter">
+    	<complexContent>
+    		<extension base="kpi:tFilter"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tConditionFilter">
+    	<complexContent>
+    		<extension base="kpi:tFilter">
+    			<sequence>
+    				<element name="ElemetRef" type="string"></element>
+    			</sequence>
+    			<attribute name="attribute" type="string"></attribute>
+    			<attribute name="operation"
+    				type="kpi:tConditionOperator">
+    			</attribute>
+    			<attribute name="value" type="string"></attribute>
+    		</extension>
+    	</complexContent>
+    </complexType>
+
+    <element name="Composition" type="kpi:tComposition"></element>
+
+    <simpleType name="tConditionOperator">
+    	<restriction base="string">
+            <enumeration value="equals" />
+            <enumeration value="less than" />
+            <enumeration value="less than equal" />
+            <enumeration value="greater than" />
+            <enumeration value="greater than equal" />
+            <enumeration value="not equal" />
+        </restriction>
+    </simpleType>
+</schema>
