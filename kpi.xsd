@@ -159,9 +159,13 @@
     </complexType>
     
     <complexType name="tMedianAggregation">
-        <complexContent>
-            <extension base="kpi:tAggregation"></extension>
-        </complexContent>
+    	<complexContent>
+    		<extension base="kpi:tAggregation">
+    			<sequence>
+    				<element ref="kpi:Aggregation"></element>
+    			</sequence>
+    		</extension>
+    	</complexContent>
     </complexType>
 
     <complexType name="tCountAggregation">
@@ -188,15 +192,24 @@
         <attribute name="resultType" type="kpi:tType"></attribute>
     </complexType>
 
-    <complexType name="tCountMetric">
-    	<complexContent>
-    		<extension base="kpi:tMetric"></extension>
-    	</complexContent>
-    </complexType>
+	<complexType name="tCountMetric">
+		<complexContent>
+			<extension base="kpi:tMetric">
+				<sequence>
+					<element name="Trigger" type="kpi:tTimeCondition"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
-    <complexType name="tTimeSpanMetric">
+	<complexType name="tTimeSpanMetric">
     	<complexContent>
-    		<extension base="kpi:tMetric"></extension>
+    		<extension base="kpi:tMetric">
+    			<sequence>
+    				<element name="Start" type="kpi:tTimeCondition"></element>
+    				<element name="End" type="kpi:tTimeCondition"></element>
+    			</sequence>
+    		</extension>
     	</complexContent>
     </complexType>
 
@@ -277,4 +290,36 @@
             <enumeration value="not equal" />
         </restriction>
     </simpleType>
+
+    <complexType name="tTimeCondition" abstract="true"></complexType>
+
+    <complexType name="tActivityStart">
+    	<complexContent>
+    		<extension base="kpi:tTimeCondition"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tActivityEnd">
+    	<complexContent>
+    		<extension base="kpi:tTimeCondition"></extension>
+    	</complexContent>
+    </complexType>
+
+    <complexType name="tPoolStart">
+    	<complexContent>
+    		<extension base="kpi:tTimeCondition"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="tPoolEnd">
+    	<complexContent>
+    		<extension base="kpi:tTimeCondition"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <complexType name="tEventTrigger">
+    	<complexContent>
+    		<extension base="kpi:tTimeCondition"></extension>
+    	</complexContent>
+    </complexType>
 </schema>
